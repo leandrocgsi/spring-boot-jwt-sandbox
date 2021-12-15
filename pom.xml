@@ -102,11 +102,17 @@
 			<version>0.9.1</version>
 		</dependency>
         
-        <!-- for Unit Tests support -->
-        <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-        </dependency>
+	    <!-- for Unit Tests support -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
         <dependency>
         	<groupId>org.springframework.boot</groupId>
         	<artifactId>spring-boot-configuration-processor</artifactId>
