@@ -1,7 +1,5 @@
 file:
     upload-dir: /Code/UdemySpringBoot/UploadDir
-server:
-    test-port: 8099
 flyway:
     password: admin123
     schemas: rest_with_spring_boot_udemy
