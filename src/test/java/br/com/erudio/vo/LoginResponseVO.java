@@ -2,7 +2,7 @@ package br.com.erudio.vo;
 
 import java.io.Serializable;
 
-public class ResponseVO implements Serializable {
+public class LoginResponseVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -42,7 +42,7 @@ public class ResponseVO implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ResponseVO other = (ResponseVO) obj;
+		LoginResponseVO other = (LoginResponseVO) obj;
 		if (token == null) {
 			if (other.token != null)
 				return false;

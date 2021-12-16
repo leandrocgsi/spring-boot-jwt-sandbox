@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.erudio.security.AccountCredentialsVO;
-import br.com.erudio.vo.ResponseVO;
+import br.com.erudio.vo.LoginResponseVO;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -35,7 +35,7 @@ class AuthControllerTest {
 	                	.statusCode(200)
 	                .extract()
 	                .body()
-	                	.as(ResponseVO.class)
+	                	.as(LoginResponseVO.class)
 	                .getToken();
 	    
 	    System.out.println(token);
