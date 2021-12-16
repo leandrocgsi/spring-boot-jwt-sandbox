@@ -4,20 +4,20 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class WrapperVO implements Serializable {
+public class WrapperPersonVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@JsonProperty("_embedded")
-	private EmbeddedVO embedded;
+	private PersonEmbeddedVO embedded;
 
-	public WrapperVO() {}
+	public WrapperPersonVO() {}
 
-	public EmbeddedVO getEmbedded() {
+	public PersonEmbeddedVO getEmbedded() {
 		return embedded;
 	}
 
-	public void setEmbedded(EmbeddedVO embedded) {
+	public void setEmbedded(PersonEmbeddedVO embedded) {
 		this.embedded = embedded;
 	}
 }

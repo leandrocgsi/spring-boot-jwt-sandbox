@@ -5,14 +5,14 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class EmbeddedVO implements Serializable {
+public class BookEmbeddedVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@JsonProperty("bookVoes")
 	private List<BookVO> books;
 
-	public EmbeddedVO() {}
+	public BookEmbeddedVO() {}
 
 	public List<BookVO> getBooks() {
 		return books;
@@ -38,7 +38,7 @@ public class EmbeddedVO implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EmbeddedVO other = (EmbeddedVO) obj;
+		BookEmbeddedVO other = (BookEmbeddedVO) obj;
 		if (books == null) {
 			if (other.books != null)
 				return false;

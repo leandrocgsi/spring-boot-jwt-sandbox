@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.erudio.security.AccountCredentialsVO;
 import br.com.erudio.vo.BookVO;
 import br.com.erudio.vo.LoginResponseVO;
-import br.com.erudio.vo.WrapperVO;
+import br.com.erudio.vo.WrapperBookVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -192,7 +192,7 @@ public class BookControllerTest {
 			            .body()
 			            	.asString();
 		
-		WrapperVO wrapper = objectMapper.readValue(content, WrapperVO.class);
+		WrapperBookVO wrapper = objectMapper.readValue(content, WrapperBookVO.class);
 		var books = wrapper.getEmbedded().getBooks();
 
 		BookVO foundBookOne = books.get(0);
