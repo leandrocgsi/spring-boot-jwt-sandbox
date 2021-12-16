@@ -4,19 +4,16 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 
-import br.com.erudio.data.vo.v1.BookVO;
-
-@JsonRootName("_embedded")
-public class EmbeddedResponseVO implements Serializable {
+public class EmbeddedVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	
+	@JsonProperty("bookVoes")
 	private List<BookVO> books;
 
-	@JsonProperty("bookVoes")
+	public EmbeddedVO() {}
+
 	public List<BookVO> getBooks() {
 		return books;
 	}
@@ -41,7 +38,7 @@ public class EmbeddedResponseVO implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EmbeddedResponseVO other = (EmbeddedResponseVO) obj;
+		EmbeddedVO other = (EmbeddedVO) obj;
 		if (books == null) {
 			if (other.books != null)
 				return false;

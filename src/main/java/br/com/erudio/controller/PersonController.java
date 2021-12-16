@@ -37,7 +37,7 @@ public class PersonController {
 	private PersonServices service;
 	
 	@Operation(summary = "Find all people" ) 
-	@GetMapping(produces = { "application/json", "application/xml", "application/x-yaml" })
+	@GetMapping
 	public ResponseEntity<CollectionModel<PersonVO>> findAll(
 			@RequestParam(value="page", defaultValue = "0") int page,
 			@RequestParam(value="limit", defaultValue = "12") int limit,
@@ -64,7 +64,7 @@ public class PersonController {
 	
 	
 	@Operation(summary = "Find a specific person by name" ) 
-	@GetMapping(value = "/findPersonByName/{firstName}", produces = { "application/json", "application/xml", "application/x-yaml" })
+	@GetMapping(value = "/findPersonByName/{firstName}")
 	public ResponseEntity<CollectionModel<PersonVO>> findPersonByName(
 			@PathVariable("firstName") String firstName,
 			@RequestParam(value="page", defaultValue = "0") int page,
@@ -87,7 +87,7 @@ public class PersonController {
 	}	
 	
 	@Operation(summary = "Find a specific person by your ID" )
-	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml", "application/x-yaml" })
+	@GetMapping(value = "/{id}")
 	public PersonVO findById(@PathVariable("id") Long id) {
 		PersonVO personVO = service.findById(id);
 		personVO.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
@@ -95,8 +95,7 @@ public class PersonController {
 	}	
 	
 	@Operation(summary = "Create a new person") 
-	@PostMapping(produces = { "application/json", "application/xml", "application/x-yaml" }, 
-			consumes = { "application/json", "application/xml", "application/x-yaml" })
+	@PostMapping
 	public PersonVO create(@RequestBody PersonVO person) {
 		PersonVO personVO = service.create(person);
 		personVO.add(linkTo(methodOn(PersonController.class).findById(personVO.getKey())).withSelfRel());
@@ -104,8 +103,7 @@ public class PersonController {
 	}
 	
 	@Operation(summary = "Update a specific person")
-	@PutMapping(produces = { "application/json", "application/xml", "application/x-yaml" }, 
-			consumes = { "application/json", "application/xml", "application/x-yaml" })
+	@PutMapping
 	public PersonVO update(@RequestBody PersonVO person) {
 		PersonVO personVO = service.update(person);
 		personVO.add(linkTo(methodOn(PersonController.class).findById(personVO.getKey())).withSelfRel());
@@ -114,7 +112,7 @@ public class PersonController {
 	
 	
 	@Operation(summary = "Disable a specific person by your ID" )
-	@PatchMapping(value = "/{id}", produces = { "application/json", "application/xml", "application/x-yaml" })
+	@PatchMapping(value = "/{id}")
 	public PersonVO disablePerson(@PathVariable("id") Long id) {
 		PersonVO personVO = service.disablePerson(id);
 		personVO.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());

@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 
 import java.util.Date;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -18,10 +19,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.erudio.data.vo.v1.BookVO;
 import br.com.erudio.security.AccountCredentialsVO;
-import br.com.erudio.vo.EmbeddedResponseVO;
+import br.com.erudio.vo.BookVO;
 import br.com.erudio.vo.LoginResponseVO;
+import br.com.erudio.vo.WrapperVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -34,14 +35,23 @@ import io.restassured.specification.RequestSpecification;
 public class BookControllerTest {
 
 	private static final String HEADER_PARAM = "Authorization";
-	private static final int SERVER_PORT = 8080;
+	private static final int SERVER_PORT = 8888;
 	private static RequestSpecification specification;
 	private static ObjectMapper objectMapper;
 
 	private static BookVO book;
 
 	@BeforeAll
-	public static void authorization() {
+	public static void setup() {
+		objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        
+        book = new BookVO();
+	}
+	
+	@Test
+	@Order(1)
+	public void authorization() {
 		AccountCredentialsVO user = new AccountCredentialsVO();
 		user.setUsername("leandro");
 		user.setPassword("admin123");
@@ -69,15 +79,10 @@ public class BookControllerTest {
 	                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
 	                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 	                .build();
-	        
-	        objectMapper = new ObjectMapper();
-	        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-	        
-	        book = new BookVO();
 	}
 	  
 	@Test
-	@Order(1)
+	@Order(2)
 	public void testCreate() throws JsonMappingException, JsonProcessingException {
 		
 		mockBook();
@@ -94,11 +99,19 @@ public class BookControllerTest {
 			            	.asString();
 		
 		book = objectMapper.readValue(content, BookVO.class);
-		System.out.println(book.getTitle());
+		
+		Assertions.assertNotNull(book.getKey());
+		Assertions.assertNotNull(book.getTitle());
+		Assertions.assertNotNull(book.getAuthor());
+		Assertions.assertNotNull(book.getPrice());
+		Assertions.assertTrue(book.getKey() > 0);
+		Assertions.assertEquals("Docker Deep Dive", book.getTitle());
+		Assertions.assertEquals("Nigel Poulton", book.getAuthor());
+		Assertions.assertEquals(55.99, book.getPrice());
 	}
 	  
 	@Test
-	@Order(2)
+	@Order(3)
 	public void testUpdate() throws JsonMappingException, JsonProcessingException {
 		
 		book.setTitle("Docker Deep Dive - Updated");
@@ -114,12 +127,20 @@ public class BookControllerTest {
 			            .body()
 			            	.asString();
 		
-		book = objectMapper.readValue(content, BookVO.class);
-		System.out.println(book.getTitle());
+		BookVO bookUpdated = objectMapper.readValue(content, BookVO.class);
+		
+		Assertions.assertNotNull(bookUpdated.getKey());
+		Assertions.assertNotNull(bookUpdated.getTitle());
+		Assertions.assertNotNull(bookUpdated.getAuthor());
+		Assertions.assertNotNull(bookUpdated.getPrice());
+		Assertions.assertEquals(bookUpdated.getKey(), book.getKey());
+		Assertions.assertEquals("Docker Deep Dive - Updated", bookUpdated.getTitle());
+		Assertions.assertEquals("Nigel Poulton", bookUpdated.getAuthor());
+		Assertions.assertEquals(55.99, bookUpdated.getPrice());
 	}
 
 	@Test
-	@Order(3)
+	@Order(4)
 	public void testFindById() throws JsonMappingException, JsonProcessingException {
 		var content = given().spec(specification)
 				.contentType("application/json")
@@ -132,13 +153,22 @@ public class BookControllerTest {
 			            .body()
 			            	.asString();
 		
-		BookVO recorded = objectMapper.readValue(content, BookVO.class);
+		BookVO foundBook = objectMapper.readValue(content, BookVO.class);
+		
+		Assertions.assertNotNull(foundBook.getKey());
+		Assertions.assertNotNull(foundBook.getTitle());
+		Assertions.assertNotNull(foundBook.getAuthor());
+		Assertions.assertNotNull(foundBook.getPrice());
+		Assertions.assertEquals(foundBook.getKey(), book.getKey());
+		Assertions.assertEquals("Docker Deep Dive - Updated", foundBook.getTitle());
+		Assertions.assertEquals("Nigel Poulton", foundBook.getAuthor());
+		Assertions.assertEquals(55.99, foundBook.getPrice());
 	}
 	
 	@Test
-	@Order(4)
+	@Order(5)
 	public void testDelete() {
-		var content = given().spec(specification)
+		given().spec(specification)
 				.contentType("application/json")
 					.pathParam("id", book.getKey())
 					.when()
@@ -146,15 +176,9 @@ public class BookControllerTest {
                 .then()
             		.statusCode(204);
 	}
-		
-	private void mockBook() {
-		book.setTitle("Docker Deep Dive");
-		book.setAuthor("Nigel Poulton");
-		book.setPrice(Double.valueOf(55.99));
-		book.setLaunchDate(new Date());
-	}
 	
 	@Test
+	@Order(6)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException {
 		
 		var content = given().spec(specification)
@@ -168,10 +192,36 @@ public class BookControllerTest {
 			            .body()
 			            	.asString();
 		
-		EmbeddedResponseVO recorded = objectMapper.readValue(content, EmbeddedResponseVO.class);
-		System.out.println(recorded);
+		WrapperVO wrapper = objectMapper.readValue(content, WrapperVO.class);
+		var books = wrapper.getEmbedded().getBooks();
+
+		BookVO foundBookOne = books.get(0);
+		
+		Assertions.assertNotNull(foundBookOne.getKey());
+		Assertions.assertNotNull(foundBookOne.getTitle());
+		Assertions.assertNotNull(foundBookOne.getAuthor());
+		Assertions.assertNotNull(foundBookOne.getPrice());
+		Assertions.assertTrue(foundBookOne.getKey() > 0);
+		Assertions.assertEquals("Big Data: como extrair volume, variedade, velocidade e valor da avalanche de informação cotidiana", foundBookOne.getTitle());
+		Assertions.assertEquals("Viktor Mayer-Schonberger e Kenneth Kukier", foundBookOne.getAuthor());
+		Assertions.assertEquals(54.00, foundBookOne.getPrice());
+		
+		BookVO foundBookFive = books.get(4);
+		
+		Assertions.assertNotNull(foundBookFive.getKey());
+		Assertions.assertNotNull(foundBookFive.getTitle());
+		Assertions.assertNotNull(foundBookFive.getAuthor());
+		Assertions.assertNotNull(foundBookFive.getPrice());
+		Assertions.assertTrue(foundBookFive.getKey() > 0);
+		Assertions.assertEquals("Domain Driven Design", foundBookFive.getTitle());
+		Assertions.assertEquals("Eric Evans", foundBookFive.getAuthor());
+		Assertions.assertEquals(92.00, foundBookFive.getPrice());
 	}
-
-	
-
+	 
+	private void mockBook() {
+		book.setTitle("Docker Deep Dive");
+		book.setAuthor("Nigel Poulton");
+		book.setPrice(Double.valueOf(55.99));
+		book.setLaunchDate(new Date());
+	}	
 }
