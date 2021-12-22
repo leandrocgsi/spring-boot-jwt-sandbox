@@ -289,6 +289,27 @@ public class PersonControllerTest {
 		Assertions.assertEquals("Female", foundPersonSeven.getGender());
 		Assertions.assertEquals(false, foundPersonSeven.getEnabled());
 	}
+	
+	@Test
+	@Order(9)
+	void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
+
+		RequestSpecification specificationWithoutToken =
+	            new RequestSpecBuilder()
+	                .setBasePath("/api/person/v1")
+	                .setPort(SERVER_PORT)
+	                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+	                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+	                .build();
+		
+		given().spec(specificationWithoutToken)
+				.contentType("application/json")
+				.queryParams("page", 6 , "limit", 10, "direction", "asc")
+				.when()
+				.get()
+				.then()
+				.statusCode(403);
+	}
 
 	private void mockPerson() {
 		person.setFirstName("Richard");
