@@ -35,7 +35,7 @@ public class BookController {
 	private BookServices service;
 	
 	@Operation(summary = "Find all books" )
-	@GetMapping
+	@GetMapping(produces = { "application/json", "application/xml", "application/x-yaml" })
 	public ResponseEntity<CollectionModel<BookVO>> findAll(
 			@RequestParam(value="page", defaultValue = "0") int page,
 			@RequestParam(value="limit", defaultValue = "12") int limit,
@@ -58,7 +58,7 @@ public class BookController {
 	}	
 	
 	@Operation(summary = "Find a specific book by your ID" )
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml", "application/x-yaml" })
 	public BookVO findById(@PathVariable("id") Long id) {
 		BookVO bookVO = service.findById(id);
 		bookVO.add(linkTo(methodOn(BookController.class).findById(id)).withSelfRel());
@@ -66,7 +66,8 @@ public class BookController {
 	}	
 	
 	@Operation(summary = "Create a new book")
-	@PostMapping
+	@PostMapping(produces = { "application/json", "application/xml", "application/x-yaml" }, 
+			consumes = { "application/json", "application/xml", "application/x-yaml" })
 	public BookVO create(@RequestBody BookVO book) {
 		BookVO bookVO = service.create(book);
 		bookVO.add(linkTo(methodOn(BookController.class).findById(bookVO.getKey())).withSelfRel());
@@ -74,7 +75,8 @@ public class BookController {
 	}
 	
 	@Operation(summary = "Update a specific book")
-	@PutMapping
+	@PutMapping(produces = { "application/json", "application/xml", "application/x-yaml" }, 
+			consumes = { "application/json", "application/xml", "application/x-yaml" })
 	public BookVO update(@RequestBody BookVO book) {
 		BookVO bookVO = service.update(book);
 		bookVO.add(linkTo(methodOn(BookController.class).findById(bookVO.getKey())).withSelfRel());
