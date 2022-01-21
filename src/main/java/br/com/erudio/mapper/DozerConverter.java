@@ -1,4 +1,4 @@
-package br.com.erudio.converter;
+package br.com.erudio.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
