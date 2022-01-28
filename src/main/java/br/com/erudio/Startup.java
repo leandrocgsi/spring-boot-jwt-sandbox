@@ -11,14 +11,19 @@ import br.com.erudio.config.FileStorageConfig;
 @EnableConfigurationProperties({
 	FileStorageConfig.class
 })
-
 public class Startup {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Startup.class, args);
 		
-		/*BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(16);
-		String result = bCryptPasswordEncoder.encode("admin123");
+		/*Map<String, PasswordEncoder> encoders = new HashMap<>();
+		encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
+        DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
+        passwordEncoder.setDefaultPasswordEncoderForMatches(new Pbkdf2PasswordEncoder());
+		
+		
+		//DelegatingPasswordEncoder passwordEncoder = (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		String result = passwordEncoder.encode("admin234");
 		System.out.println("My hash " + result);*/
 	}
 }
